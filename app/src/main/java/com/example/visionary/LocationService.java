@@ -94,7 +94,7 @@ public class LocationService extends Service implements
     public void onLocationChanged(Location location) {
 //        mCurrentLocation = location;
         long currentTime = System.currentTimeMillis();
-        if (currentTime - timeStamp > 5000) {
+        if (currentTime - timeStamp > 1000) {
             if(locationUpdateListener!=null) {
                 locationUpdateListener.onLocationChanged(location);
             }
@@ -112,7 +112,6 @@ public class LocationService extends Service implements
             fusedLocationProviderApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
-//        Log.e("TAG","Service Stopped");
         super.onDestroy();
     }
 
