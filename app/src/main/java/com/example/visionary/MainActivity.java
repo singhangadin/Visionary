@@ -17,6 +17,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -49,7 +50,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private ArrayList<PointData> pointDatas;
     private LocationService mService;
+    private BluetoothService mService1;
     private boolean mBound = false;
+    private boolean bound1=false;
     private TextToSpeech tts;
     private GoogleMap mMap = null;
     private FloatingActionButton fab;
@@ -112,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements
 //        }
         Intent intent = new Intent(this, LocationService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        Intent intent1=new Intent(this,BluetoothService.class);
+        bindService(intent1,mConn,Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -137,6 +142,12 @@ public class MainActivity extends AppCompatActivity implements
             unbindService(mConnection);
             mBound = false;
         }
+        if(bound1){
+            unbindService(mConn);
+            bound1=false;
+        }
+
+
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -154,6 +165,21 @@ public class MainActivity extends AppCompatActivity implements
             mBound = false;
         }
     };
+    private ServiceConnection mConn=new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+          BluetoothService.BluetoothBinder binder=(BluetoothService.BluetoothBinder)iBinder;
+            mService1=binder.getService();
+            Log.d("Maina","binded");
+            bound1=true;
+        }
+
+        @Override
+         public void onServiceDisconnected(ComponentName componentName) {
+           bound1=false;
+        }
+    };
+
 
     @Override
     public void onLocationChanged(Location location) {
